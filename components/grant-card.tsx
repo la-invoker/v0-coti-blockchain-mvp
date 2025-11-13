@@ -9,14 +9,23 @@ interface GrantCardProps {
   description: string
   author: string
   created_at: string
+  isMasked?: boolean
 }
 
-export function GrantCard({ id, title, description, author, created_at }: GrantCardProps) {
+function maskText(text: string): string {
+  return "•".repeat(Math.min(text.length, 50))
+}
+
+export function GrantCard({ id, title, description, author, created_at, isMasked = false }: GrantCardProps) {
   const formattedDate = new Date(created_at).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
   })
+
+  const displayTitle = isMasked ? maskText(title) : title
+  const displayDescription = isMasked ? maskText(description) : description
+  const displayAuthor = isMasked ? maskText(author) : author
 
   return (
     <Link href={`/grants/${id}`} className="block group">
@@ -25,9 +34,9 @@ export function GrantCard({ id, title, description, author, created_at }: GrantC
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">
               <CardTitle className="text-xl mb-1 group-hover:text-primary transition-colors line-clamp-2">
-                {title}
+                {displayTitle}
               </CardTitle>
-              <CardDescription className="line-clamp-3">{description}</CardDescription>
+              <CardDescription className="line-clamp-3">{displayDescription}</CardDescription>
             </div>
             <Badge variant="secondary" className="shrink-0">
               <Lock className="h-3 w-3 mr-1" />#{id}
@@ -38,7 +47,7 @@ export function GrantCard({ id, title, description, author, created_at }: GrantC
           <div className="flex flex-col gap-2 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <User className="h-4 w-4" />
-              <span className="truncate">{author}</span>
+              <span className="truncate">{displayAuthor}</span>
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />

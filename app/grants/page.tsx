@@ -5,13 +5,15 @@ import { Navigation } from "@/components/navigation"
 import { GrantCard } from "@/components/grant-card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertCircle, Database } from "lucide-react"
+import { AlertCircle, Database, Eye, EyeOff } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import type { GrantResponse } from "@/lib/coti/types"
 
 export default function GrantsPage() {
   const [grants, setGrants] = useState<GrantResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isMasked, setIsMasked] = useState(true)
 
   useEffect(() => {
     const fetchGrants = async () => {
@@ -56,6 +58,24 @@ export default function GrantsPage() {
             </Alert>
           )}
 
+          {!isLoading && grants.length > 0 && (
+            <div className="flex justify-end">
+              <Button variant="outline" onClick={() => setIsMasked(!isMasked)} className="gap-2">
+                {isMasked ? (
+                  <>
+                    <Eye className="h-4 w-4" />
+                    Unmask Data
+                  </>
+                ) : (
+                  <>
+                    <EyeOff className="h-4 w-4" />
+                    Mask Data
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
+
           {isLoading ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
@@ -80,6 +100,7 @@ export default function GrantsPage() {
                   description={grant.description}
                   author={grant.author}
                   created_at={grant.created_at}
+                  isMasked={isMasked}
                 />
               ))}
             </div>

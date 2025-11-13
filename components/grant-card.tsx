@@ -13,7 +13,7 @@ interface GrantCardProps {
 }
 
 function maskText(text: string): string {
-  return "•".repeat(Math.min(text.length, 50))
+  return "•".repeat(Math.min(text?.length, 50))
 }
 
 export function GrantCard({ id, title, description, author, created_at, isMasked = false }: GrantCardProps) {
